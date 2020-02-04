@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://unpkg.com/vuex"></script>
+    <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <script src="js/products.js"></script>
+    <script src="js/vuex.js"></script>
+
+</head>
+
+<body>
+    <div id="app">
+        <v-app v-cloak>
+            <v-app-bar 
+                app 
+                clipped-left 
+                extended 
+                elevate-on-scroll 
+                dark 
+                color="dark"
+            >
+                <v-app-bar-nav-icon @click="showDrawer = !showDrawer" class="d-flex d-sm-none">
+                </v-app-bar-nav-icon>
+                <v-toolbar-title>{{sitename}}</v-toolbar-title>
+                <v-spacer></v-spacer>
+
+                <v-btn icon link :to="{name:'checkout'}">
+                    <v-badge color="green" left bottom>
+                        <template v-slot:badge>
+                            <span>{{cartItemCount}}</span>
+                        </template>
+                        <v-icon>mdi-cart-outline</v-icon>
+                    </v-badge>
+                </v-btn>
+
+                <v-btn icon>
+                    <v-icon>mdi-magnify</v-icon>
+                </v-btn>
+
+                <template v-slot:extension>
+                    <v-tabs 
+                        centered 
+                        center-active 
+                        grow
+                        slider-color="green" 
+                        background-color="transparent"
+                    >
+                        <v-tab link :to="{name:'main'}" exact>
+                            Главная
+                        </v-tab>
+                        <v-tab link :to="{name:'products'}">
+                            Бонсай
+                        </v-tab>
+                        <v-tab link :to="{name:'contacts'}">
+                            Контакты
+                        </v-tab>
+                        <v-menu open-on-hover>
+                            <template v-slot:activator="{ on }">
+                                <v-btn text class="align-self-center mr-4" v-on="on">
+                                    аккаунт
+                                    <v-icon right>mdi-menu-down</v-icon>
+                                </v-btn>
+                            </template>
+                        
+                            <v-list>
+                                <v-list-item link :to="{name:'logon'}">
+                                    <v-list-item-title>Регистрация</v-list-item-title>
+                                </v-list-item>
+                                <v-list-item link :to="{name:'login'}">
+                                    <v-list-item-title>Вход на сайт</v-list-item-title>
+                                </v-list-item>
+                            </v-list>
+                        </v-menu>
+                    </v-tabs>
+                </template>
+            </v-app-bar>
+
+            <v-navigation-drawer 
+                class="d-flex d-sm-none"
+                v-model="showDrawer" 
+                app 
+                temporary 
+            >
+                <v-list dense>
+                    <v-subheader class="title justify-center">Меню</v-subheader>
+                    <v-list-item link :to="{name:'main'}" exact>
+                        <v-list-item-icon>
+                            <v-icon>mdi-home</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content>
+                            Главная
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item link :to="{name:'products'}">
+                        <v-list-item-icon>
+                            <v-icon>mdi-leaf</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content>
+                            Бонсай
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item link :to="{name:'contacts'}">
+                        <v-list-item-icon>
+                            <v-icon>mdi-phone-classic</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content>
+                            Контакты
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item link :to="{name:'logon'}">
+                        <v-list-item-icon>
+                            <v-icon>mdi-account-card-details</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content>
+                            Регистрация
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item link :to="{name:'login'}">
+                        <v-list-item-icon>
+                            <v-icon>mdi-account-card-details</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content>
+                            Вход на сайт
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item link :to="{name:'checkout'}">
+                        <v-list-item-icon>
+                            <v-icon>mdi-cart</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content>
+                            Корзина
+                        </v-list-item-content>
+                    </v-list-item>
+                </v-list>
+            </v-navigation-drawer>
+
+            <v-content app>
+                <v-container fluid>
+                    <transition name="fade" mode='out-in' appear>
+                        <router-view></router-view>
+                    </transition>
+                </v-container>
+            </v-content>
+
+            <v-footer 
+                app
+                absolute
+                class="font-weight-medium"
+                >
+                <v-col class="text-center" cols="12">
+                    {{ new Date().getFullYear() }} — <strong>Bonsai-Club</strong>
+                </v-col>
+            </v-footer>
+        </v-app>
+
+    </div>
+
+    <script src="js/article.js"></script>
+    <script src="js/contacts.js"></script>
+    <script src="js/logon_login.js"></script>
+    <script src="js/router.js"></script>
+
+</body>
+
+</html>
